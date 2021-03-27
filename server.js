@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 
 const authRouts = require('./routes/auth');
 const messageRouts = require('./routes/message')
+const port=process.env.PORT||3000;
 
 const app=express();
 
@@ -39,6 +40,10 @@ app.use((req, res, next) => {
   };
   mongoose.connect(process.env.MONGO_URL, dbOptions).then(result=>{
     console.log('connected To mongodb ...');
-    app.listen(process.env.PORT, ()=> console.log(`Server is running on PORT: ${process.env.PORT}`));
+   const server= app.listen(port);
+   const io=require('./socketIo').init(server);
+   io.on('connection',socket=>{
+     console.log('socket')
+   })
 
   })

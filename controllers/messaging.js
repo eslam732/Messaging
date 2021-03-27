@@ -1,6 +1,7 @@
 const User = require('../models/users');
 const MessageModel = require('../models/messages');
 const ChatModel = require('../models/chats');
+const socketIo = require('../socketIo');
 
 
 
@@ -44,6 +45,12 @@ try{
         chat.messages.push(message._id);
         chat.save();
         message.save();
+        const data={
+            message:textMessage,
+            sender:req.userId,
+            chatId:chatId
+        }
+        socketIo.getIO().emit(`receiveMessage::${chatId}`,data)
         return res.status(200).json({ message: message });
 
 
